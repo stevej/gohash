@@ -17,6 +17,7 @@ var (
 	listEncodings = kingpin.Flag("list-encodings", "List available encodings.").Short('E').Bool()
 	skipNewline   = kingpin.Flag("skip-newline", "Don't output newline.").Short('n').Bool()
 	skipFilename  = kingpin.Flag("skip-filename", "Don't output filename.").Bool()
+	disableColor  = kingpin.Flag("disable-color", "Disable color output.").Bool()
 )
 
 func main() {
@@ -61,12 +62,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("%s", brush.Yellow(encodedHash))
+	if *disableColor {
+		fmt.Printf("%s", encodedHash)
+	} else {
+		fmt.Printf("%s", brush.Yellow(encodedHash))
+	}
+
 	if !*skipFilename {
 		if appInputData.IsPipe {
 			*fileName = "-"
 		}
-		fmt.Printf("  %s", brush.White(*fileName))
+		if *disableColor {
+			fmt.Printf("  %s", *fileName)
+		} else {
+			fmt.Printf("  %s", brush.White(*fileName))
+		}
 	}
 	if !*skipNewline {
 		fmt.Println()
